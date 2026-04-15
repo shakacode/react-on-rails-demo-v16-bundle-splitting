@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== Building React on Rails production bundles ==="
+
+export RAILS_ENV="${RAILS_ENV:-production}"
+export NODE_ENV="${NODE_ENV:-production}"
+export SECRET_KEY_BASE="${SECRET_KEY_BASE:-${SECRET_KEY_BASE_DUMMY:-test-secret-key-base}}"
+
+echo "--- Cleaning previous bundle output ---"
+rm -rf app/javascript/generated
+rm -rf app/javascript/packs/generated
+rm -rf public/packs
+
+echo "--- Generating React on Rails packs ---"
+bundle exec rake react_on_rails:generate_packs
+
+echo "--- Compiling client and server bundles ---"
+bin/shakapacker
+
+test -f app/javascript/generated/server-bundle-generated.js
+test -f public/packs/server-bundle.js
+
+echo "=== React on Rails production bundles ready ==="

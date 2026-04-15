@@ -1,8 +1,8 @@
-# React on Rails Demo: SSR, Auto-Registration & Bundle Splitting with v15 and Rails 8
+# React on Rails Demo: SSR, Auto-Registration & Bundle Splitting with v16 and Rails 8
 
-A fully working demo of React on Rails v15 on Rails 8, showcasing server-side rendering, auto-registration, and bundle splitting capabilities. This demo also demonstrates the **corrected installation sequence** that fixes the infamous "package.json not found" error.
+A fully working demo of React on Rails v16 on Rails 8, showcasing server-side rendering, auto-registration, and bundle splitting capabilities. This demo also demonstrates the **corrected installation sequence** that fixes the infamous "package.json not found" error.
 
-![React on Rails](https://img.shields.io/badge/React%20on%20Rails-15.0-blue)
+![React on Rails](https://img.shields.io/badge/React%20on%20Rails-16.1.1-blue)
 ![Rails](https://img.shields.io/badge/Rails-8.0.1-red)
 ![React](https://img.shields.io/badge/React-19.1.1-61DAFB)
 ![Shakapacker](https://img.shields.io/badge/Shakapacker-8.3.0-green)
@@ -17,32 +17,22 @@ A fully working demo of React on Rails v15 on Rails 8, showcasing server-side re
 - **Rails 8 Integration** - Latest Rails version with modern asset pipeline
 - **Installation Fix** - Corrected Shakapacker → React on Rails sequence
 
-📂 **Repo name:** `react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting`
+📂 **Repo name:** `react_on_rails-demo-v16-ssr-auto-registration-bundle-splitting`
 
 📚 **Part of the** [React on Rails Demo Series](https://github.com/shakacode?tab=repositories&q=react_on_rails-demo)
 
-## ⚠️ Important: Known Issue with Packs Generation
+## 📦 Production Build Note
 
-There's a bug in the `react_on_rails:generate_packs` task with CSS modules (see [#1768](https://github.com/shakacode/react_on_rails/issues/1768)).
+Production builds now generate the auto-registration entry files on demand.
+The checked-in [`Dockerfile`](./Dockerfile) runs [`bin/build-production`](./bin/build-production)
+before `assets:precompile`, which:
 
-**Problem**: The generator creates invalid JavaScript syntax when handling CSS modules:
-```javascript
-// ❌ Invalid (generated)
-import HelloWorld.module from '../ror_components/HelloWorld.module.css';
-ReactOnRails.register({HelloWorld, HelloWorld.module});
-```
+- regenerates `app/javascript/packs/generated/*`
+- regenerates `app/javascript/generated/server-bundle-generated.js`
+- compiles the client bundles and `public/packs/server-bundle.js`
+- leaves Node.js available in the final image so ExecJS can evaluate the SSR bundle at runtime
 
-**Workaround**: After running the generator, manually fix the generated files by removing CSS module imports from the server bundle:
-
-```javascript
-// ✅ Fixed (manual)
-import ReactOnRails from 'react-on-rails';
-import HelloWorld from '../ror_components/HelloWorld.jsx';
-
-ReactOnRails.register({HelloWorld});
-```
-
-This demo has been manually fixed to work correctly with SSR.
+That keeps local development, Docker builds, and Control Plane deploys aligned on the same production bundle path.
 
 ## 🎯 What This Demo Solves
 
@@ -80,8 +70,8 @@ This demo includes comprehensive documentation for both developers and AI coding
 
 ```bash
 # Clone the demo repository
-git clone https://github.com/shakacode/react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting.git
-cd react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting
+git clone https://github.com/shakacode/react_on_rails-demo-v16-ssr-auto-registration-bundle-splitting.git
+cd react_on_rails-demo-v16-ssr-auto-registration-bundle-splitting
 
 # Install dependencies
 bundle install && npm install
@@ -123,7 +113,7 @@ rails generate react_on_rails:install
 
 ## 🎯 Key Architectural Concepts
 
-This demo showcases React on Rails v15's **file-system-based auto-registration**:
+This demo showcases React on Rails v16's **file-system-based auto-registration**:
 
 - **Magic Directory**: Components in `app/javascript/src/ComponentName/ror_components/` are automatically discovered
 - **Auto-Generated Entries**: `rake react_on_rails:generate_packs` creates webpack bundles
@@ -135,7 +125,19 @@ This demo showcases React on Rails v15's **file-system-based auto-registration**
 - **[React on Rails Documentation](https://shakacode.gitbook.io/react-on-rails/)** - Official docs
 - **[Shakapacker Documentation](https://github.com/shakacode/shakapacker)** - Webpack integration
 - **[React on Rails Pro](https://www.shakacode.com/react-on-rails-pro)** - Advanced features
-- **[Demo Repository](https://github.com/shakacode/react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting)** - This complete working example
+- **[Demo Repository](https://github.com/shakacode/react_on_rails-demo-v16-ssr-auto-registration-bundle-splitting)** - This complete working example
+
+## 🚢 Control Plane Flow
+
+This repo now includes the shared `cpflow` GitHub Actions flow for review apps,
+automatic staging deploys, and manual promotion to production.
+
+See **[.controlplane/readme.md](./.controlplane/readme.md)** for:
+
+- required GitHub Actions secrets and variables
+- the app names used for staging, review, and production
+- the runtime `SECRET_KEY_BASE` secret requirement
+- local `cpflow` commands for setup, deploy, and troubleshooting
 
 ## 📊 Performance Metrics
 
@@ -155,7 +157,7 @@ This sample application **fixes a critical bug** in the official React on Rails 
 - **📦 Performance**: Intelligent bundle splitting for optimal loading
 - **🔧 Developer Experience**: Enhanced development tools with multiple testing modes
 
-**Perfect for**: Learning React on Rails v15, understanding bundle splitting, or using as a reference implementation.
+**Perfect for**: Learning React on Rails v16, understanding bundle splitting, or using as a reference implementation.
 
 ## 🔧 Troubleshooting
 
@@ -163,7 +165,7 @@ This sample application **fixes a critical bug** in the official React on Rails 
 
 If you see this error:
 ```
-error connecting to /private/tmp/tmux-501/overmind-react-on-rails-demo-v15... (File name too long)
+error connecting to /private/tmp/tmux-501/overmind-react-on-rails-demo-v16... (File name too long)
 ```
 
 **Solution**: The project directory name is too long for tmux socket paths. We've included a `.overmind.env` file with shorter paths, but if you still encounter issues:
