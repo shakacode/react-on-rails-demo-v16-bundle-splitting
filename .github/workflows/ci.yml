@@ -59,6 +59,14 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Build test bundles
+        env:
+          RAILS_ENV: test
+        run: bin/shakapacker
+
       - name: Run tests
         env:
           RAILS_ENV: test
