@@ -1,0 +1,92 @@
+/* Lightweight markdown content styling for the shared viewer component */
+.markdownContent {
+  line-height: 1.6;
+}
+
+/* Headings */
+.markdownContent h1,
+.markdownContent h2,
+.markdownContent h3,
+.markdownContent h4,
+.markdownContent h5,
+.markdownContent h6 {
+  color: #2c3e50;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdownContent h1 {
+  border-bottom: 2px solid #e67e22;
+  padding-bottom: 0.3rem;
+}
+
+/* Code and pre */
+.markdownContent code {
+  background-color: #f1c40f;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.markdownContent pre {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.markdownContent pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* Tables */
+.markdownContent table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.markdownContent th,
+.markdownContent td {
+  border: 1px solid #bdc3c7;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdownContent th {
+  background-color: #ecf0f1;
+  font-weight: bold;
+}
+
+/* Lists */
+.markdownContent ul li.task-list-item {
+  list-style: none;
+  margin-left: -1rem;
+}
+
+/* Blockquotes */
+.markdownContent blockquote {
+  border-left: 4px solid #e67e22;
+  margin: 1rem 0;
+  padding-left: 1rem;
+  color: #7f8c8d;
+}
+
+/* Links */
+.markdownContent a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.markdownContent a:hover {
+  text-decoration: underline;
+}
+
+/* Paragraphs */
+.markdownContent p {
+  margin-bottom: 1rem;
+}

@@ -134,7 +134,7 @@
   font-weight: bold;
 }
 
-.preview ul li[data-task] {
+.preview ul li.task-list-item {
   list-style: none;
   margin-left: -1rem;
 }
@@ -222,6 +222,10 @@
   text-align: center;
   padding-top: 1rem;
   border-top: 2px solid #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
 }
 
 .link {
@@ -233,7 +237,6 @@
   border-radius: 4px;
   font-weight: bold;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-bottom: 1rem;
 }
 
 .link:hover {

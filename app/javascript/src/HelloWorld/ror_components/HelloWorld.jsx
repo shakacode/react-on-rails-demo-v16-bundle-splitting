@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import * as style from './HelloWorld.module.css';
 
@@ -30,6 +32,9 @@ const HelloWorld = (props) => {
       <div className={style.navigation}>
         <a href="/heavy_markdown_editor" className={style.link}>
           → Try Heavy Markdown Editor
+        </a>
+        <a href="/rsc_markdown_page" className={style.link}>
+          → Try RSC Markdown Page
         </a>
         <div className={style.bundleInfo}>
           <strong>Bundle Size:</strong> Minimal - just React basics (~10.0KB total in production)

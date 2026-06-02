@@ -49,6 +49,15 @@ ReactOnRails.configure do |config|
   #
   config.server_bundle_js_file = "server-bundle.js"
 
+  # React Server Components bundle file
+  config.rsc_bundle_js_file = "rsc-bundle.js"
+
+  # Server bundle output directory
+  config.server_bundle_output_path = "ssr-generated"
+
+  # Enforce private server bundles (prevents fallback to public/packs)
+  config.enforce_private_server_bundles = true
+
   ################################################################################
   ################################################################################
   # FILE SYSTEM BASED COMPONENT REGISTRY

@@ -78,12 +78,29 @@ This demo includes comprehensive documentation for both developers and AI coding
 
 ## 🚀 Quick Start
 
+### Prerequisites: GitHub Packages Authentication
+
+This demo uses **React on Rails Pro** from GitHub Packages. While RORP will be open source soon, it currently requires authentication with your Pro subscription token.
+
+1. **Configure npm for GitHub Packages:**
+   ```bash
+   npm config set @shakacode-tools:registry https://npm.pkg.github.com
+   npm config set //npm.pkg.github.com/:_authToken YOUR_PRO_TOKEN
+   ```
+
+2. **Configure Bundler for GitHub Packages:**
+   ```bash
+   bundle config rubygems.pkg.github.com YOUR_PRO_TOKEN
+   ```
+
+### Installation
+
 ```bash
 # Clone the demo repository
 git clone https://github.com/shakacode/react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting.git
 cd react_on_rails-demo-v15-ssr-auto-registration-bundle-splitting
 
-# Install dependencies
+# Install dependencies (after configuring GitHub Packages above)
 bundle install && npm install
 
 # Start development server
@@ -92,6 +109,8 @@ bundle install && npm install
 # Visit the demo
 open http://localhost:3000
 ```
+
+**Note:** Without GitHub Packages authentication, `bundle install` and `npm install` will fail when trying to download `react_on_rails_pro` and `@shakacode-tools/react-on-rails-pro-node-renderer`.
 
 ### 🌐 Demo Components
 

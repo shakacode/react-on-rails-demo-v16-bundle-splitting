@@ -71,6 +71,10 @@
 
 .navigation {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
 }
 
 .link {

@@ -3,3 +3,5 @@
 rails: bundle exec rails s -p 3000
 wp-client: WEBPACK_SERVE=true bin/shakapacker-dev-server
 wp-server: SERVER_BUNDLE_ONLY=yes bin/shakapacker --watch
+wp-rsc: HMR=true RSC_BUNDLE_ONLY=yes bin/shakapacker --watch
+node-renderer: RENDERER_LOG_LEVEL=debug RENDERER_PORT=3800 node client/node-renderer.js

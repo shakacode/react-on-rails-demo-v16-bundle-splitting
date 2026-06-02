@@ -9,8 +9,12 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # React Server Components payload route
+  rsc_payload_route
+
   # React on Rails demo routes
   root "hello_world#index"
   get "hello_world", to: "hello_world#index"
   get "heavy_markdown_editor", to: "heavy_markdown_editor#index"
+  get "rsc_markdown_page", to: "rsc_markdown_page#index"
 end

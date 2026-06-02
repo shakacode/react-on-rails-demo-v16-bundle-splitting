@@ -3,8 +3,10 @@
 
 const { merge, config } = require('shakapacker');
 const commonWebpackConfig = require('./commonWebpackConfig');
+const path = require('path');
 
 const webpack = require('webpack');
+const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
 
 const configureServer = () => {
   // We need to use "merge" because the clientConfigObject, EVEN after running
@@ -49,9 +51,9 @@ const configureServer = () => {
     filename: 'server-bundle.js',
     globalObject: 'this',
     // If using the React on Rails Pro node server renderer, uncomment the next line
-    // libraryTarget: 'commonjs2',
-    path: config.outputPath,
-    publicPath: config.publicPath,
+    libraryTarget: 'commonjs2',
+    path: path.resolve(__dirname, '../../ssr-generated'),
+    // No publicPath needed since server bundles are not served via web
     // https://webpack.js.org/configuration/output/#outputglobalobject
   };
 
@@ -96,6 +98,21 @@ const configureServer = () => {
         cssLoader.options.modules = { exportOnlyLocals: true };
       }
 
+      const babelLoader = rule.use.find((item) => {
+        let testValue;
+
+        if (typeof item === 'string') {
+          testValue = item;
+        } else if (typeof item.loader === 'string') {
+          testValue = item.loader;
+        }
+
+        return testValue.includes('babel-loader');
+      });
+      if (babelLoader && babelLoader.options) {
+        babelLoader.options.caller = { ssr: true };
+      }
+
       // Skip writing image files during SSR by setting emitFile to false
     } else if (rule.use && (rule.use.loader === 'url-loader' || rule.use.loader === 'file-loader')) {
       rule.use.options.emitFile = false;
@@ -110,7 +127,10 @@ const configureServer = () => {
   // If using the default 'web', then libraries like Emotion and loadable-components
   // break with SSR. The fix is to use a node renderer and change the target.
   // If using the React on Rails Pro node server renderer, uncomment the next line
-  // serverWebpackConfig.target = 'node'
+  serverWebpackConfig.target = 'node';
+
+  // Add React Server Components plugin for server bundle
+  serverWebpackConfig.plugins.push(new RSCWebpackPlugin({ isServer: true }));
 
   return serverWebpackConfig;
 };

@@ -57,3 +57,8 @@ group :test do
 end
 gem "shakapacker", "~> 8.3"
 gem "react_on_rails", "~> 16.1.1"
+
+# React on Rails Pro from GitHub Packages
+source "https://rubygems.pkg.github.com/shakacode-tools" do
+  gem "react_on_rails_pro"
+end
