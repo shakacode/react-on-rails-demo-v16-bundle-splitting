@@ -25,6 +25,8 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
+FROM docker.io/library/node:22-bookworm-slim AS node
+
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
@@ -33,11 +35,18 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Copy Node.js into the build stage so React on Rails bundles can be compiled.
+COPY --from=node /usr/local/ /usr/local/
+
 # Install application gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
+
+# Install JavaScript dependencies before copying the full app for better layer caching.
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # Copy application code
 COPY . .
@@ -45,7 +54,10 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# Build the client and SSR bundles before the Rails asset pipeline runs.
+RUN SECRET_KEY_BASE_DUMMY=1 NODE_ENV=production ./bin/build-production
+
+# Precompile Rails assets for production without requiring secret RAILS_MASTER_KEY.
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
@@ -54,8 +66,11 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # Final stage for app image
 FROM base
 
+# React on Rails SSR evaluates the server bundle at runtime via ExecJS.
+COPY --from=node /usr/local/ /usr/local/
+
 # Copy built artifacts: gems, application
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
