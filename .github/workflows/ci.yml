@@ -59,6 +59,23 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Generate React on Rails packs
+        run: bin/rails react_on_rails:generate_packs
+
+      - name: Build test packs
+        env:
+          RAILS_ENV: test
+        run: bin/shakapacker
+
       - name: Run tests
         env:
           RAILS_ENV: test
